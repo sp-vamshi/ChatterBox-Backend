@@ -1,0 +1,11 @@
+# Dependencies
+
+/node_modules
+
+
+/config.env
+
+*.env
+.env.development.local
+.env.test.local
+.env.production.local
