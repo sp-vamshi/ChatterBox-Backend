@@ -49,12 +49,13 @@ io.on("connection", async (socket) => {
     const socket_id = socket.id;
     console.log(`User Connected ${socket_id}`)
 
+
     if (user_id !== null && Boolean(user_id)) {
         await User.findByIdAndUpdate(user_id, { socket_id, status: "Online" })
+        socket.broadcast.emit("is_online", { user_id: user_id })
     }
 
     socket.on("friend_request", async (data) => {
-        console.log(data.to)
 
         const to_user = await User.findById(data.to).select("socket_id");
         const from_user = await User.findById(data.from).select("socket_id");
@@ -81,10 +82,7 @@ io.on("connection", async (socket) => {
     });
 
     socket.on("accept_request", async (data) => {
-        console.log(data)
-
         const request_doc = await FriendRequest.findById(data.request_id)
-        console.log(request_doc)
 
         const sender = await User.findById(request_doc.sender);
         const receiver = await User.findById(request_doc.recipient);
@@ -109,7 +107,7 @@ io.on("connection", async (socket) => {
 
     socket.on("get_direct_conversations", async ({ user_id }, callback) => {
 
-        const existing_conversations = await OneToOneMessage.find({
+        const existing_conversations = await OneToOneMessage.find({        // returns an array of chats list with whom user has previously chat with
             participants: { $all: [user_id] }
         }).populate("participants", "firstName lastName email _id status");
 
@@ -127,8 +125,6 @@ io.on("connection", async (socket) => {
             participants: { $size: 2, $all: [to, from] }
         }).populate("participants", "firstName lastName email _id status");
 
-        console.log("Existing Conversation", existing_conversation[0]);
-
         // if no existing_conversation
 
         if (existing_conversation.length === 0) {
@@ -137,8 +133,6 @@ io.on("connection", async (socket) => {
             });
 
             new_chat = await OneToOneMessage.findById(new_chat._id).populate("participants", "firstName lastName email _id status");
-
-            console.log(new_chat)
             socket.emit("start_chat", new_chat);
         }
         // if there is existing_conversations
@@ -157,12 +151,10 @@ io.on("connection", async (socket) => {
     })
 
     socket.on("text_message", async (data) => {
-        console.log("Received Message", data)
 
         // data : {to, from, text, conversation_id, type }
 
         const { to, from, message, conversation_id, type } = data;
-
         const to_user = await User.findById(to);
         const from_user = await User.findById(from);
 
@@ -172,7 +164,7 @@ io.on("connection", async (socket) => {
 
         // create a new conversation if it doesn't exist yet or add new message to the messages list
         const chat = await OneToOneMessage.findById(conversation_id);
-        chat.message.push(new_message)
+        chat.messages.push(new_message)
 
         // save to db
         await chat.save({})
@@ -192,7 +184,6 @@ io.on("connection", async (socket) => {
     });
 
     socket.on("file_message", (data) => {
-        console.log("Received Message", data)
 
         // data:{to, form, text, file}
 
@@ -221,7 +212,6 @@ io.on("connection", async (socket) => {
 
     socket.on("end", async (data) => {
         // Find user by _id and set the status to Offline
-
         if (data.user_id) {
             await User.findByIdAndUpdate(data.user_id, { status: "Offline" })
         }

@@ -94,7 +94,7 @@ exports.sendOTP = async (req, res, next) => {
 
 };
 
-exports.verifyOTP = async (req, res, next) => {
+exports.verifyEmail = async (req, res, next) => {
     // verify OTP and user record accordingly
     const { email, otp } = req.body;
 
