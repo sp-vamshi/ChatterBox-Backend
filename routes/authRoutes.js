@@ -8,13 +8,11 @@ router.post("/register", authController.register, authController.sendOTP)
 
 router.post("/send-otp", authController.sendOTP)
 
-router.post("/verify", authController.verifyOTP)
+router.post("/verify", authController.verifyEmail)
 
 router.post("/fogot-password", authController.forgotPassword)
 
 router.post("/reset-password", authController.resetPassword)
-
-
 
 
 module.exports = router;

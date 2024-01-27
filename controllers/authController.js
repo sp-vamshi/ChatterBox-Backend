@@ -67,12 +67,12 @@ exports.sendOTP = async (req, res, next) => {
 
     // Send OTP Mail to user
 
-    // mailService.sendEmail({
-    //     to: "spvamshi22@gmail.com",
-    //     subject: "Verification OTP",
-    //     html: otp(user.firstName, new_otp),
-    //     attachments: [],
-    // })
+    mailService.sendEmail({
+        to: "spvamshi22@gmail.com",
+        subject: "Verification OTP",
+        html: otp(user.firstName, new_otp),
+        attachments: [],
+    })
 
     console.log(new_otp)
 
@@ -94,7 +94,7 @@ exports.sendOTP = async (req, res, next) => {
 
 };
 
-exports.verifyOTP = async (req, res, next) => {
+exports.verifyEmail = async (req, res, next) => {
     // verify OTP and user record accordingly
     const { email, otp } = req.body;
 
@@ -242,16 +242,16 @@ exports.forgotPassword = async (req, res, next) => {
     await user.save({ validateBeforeSave: false });
 
     try {
-        const resetURL = `http://localhost:3000/auth/new-password?token=${resetToken}`
+        const resetURL = `${process.env.CLIENT_ORIGIN_URL}/auth/new-password?token=${resetToken}`
 
         // Send Email With Reset URL
 
-        // mailService.sendEmail({
-        //     to: "spvamshi22@gmail.com",
-        //     subject: "Verification OTP",
-        //     html: resetPassword(user.firstName, resetURL),
-        //     attachments: [],
-        // })
+        mailService.sendEmail({
+            to: "spvamshi22@gmail.com",
+            subject: "Verification OTP",
+            html: resetPassword(user.firstName, resetURL),
+            attachments: [],
+        })
         console.log(resetURL)
 
         res.status(200).json({
