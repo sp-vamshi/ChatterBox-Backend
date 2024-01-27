@@ -21,7 +21,7 @@ const server = http.createServer(app)
 
 const io = new Server(server, {
     cors: {
-        origin: "http://localhost:3000",
+        origin: process.env.CLIENT_ORIGIN_URL,
         methods: ["GET", "POST"]
     }
 })
@@ -47,12 +47,10 @@ io.on("connection", async (socket) => {
     const user_id = socket.handshake.query["user_id"];
 
     const socket_id = socket.id;
-    console.log(`User Connected ${socket_id}`)
-
 
     if (user_id !== null && Boolean(user_id)) {
         await User.findByIdAndUpdate(user_id, { socket_id, status: "Online" })
-        socket.broadcast.emit("is_online", { user_id: user_id })
+        socket.broadcast.emit("is_user_active", { user_id: user_id, status: true })
     }
 
     socket.on("friend_request", async (data) => {
@@ -104,7 +102,6 @@ io.on("connection", async (socket) => {
         });
     });
 
-
     socket.on("get_direct_conversations", async ({ user_id }, callback) => {
 
         const existing_conversations = await OneToOneMessage.find({        // returns an array of chats list with whom user has previously chat with
@@ -114,7 +111,6 @@ io.on("connection", async (socket) => {
         callback(existing_conversations)
 
     })
-
 
     socket.on("start_conversation", async (data) => {
         // data: {to, from}
@@ -139,8 +135,6 @@ io.on("connection", async (socket) => {
         else {
             socket.emit("start_chat", existing_conversation[0]);
         }
-
-
     })
 
     // Hanlde text/link messages
@@ -214,12 +208,8 @@ io.on("connection", async (socket) => {
         // Find user by _id and set the status to Offline
         if (data.user_id) {
             await User.findByIdAndUpdate(data.user_id, { status: "Offline" })
+            socket.broadcast.emit("is_user_active", { user_id: user_id, status: false })
         }
-
-        // TODO => broadcast user_disconnected
-
-
-        console.log("Closing connection");
 
         socket.disconnect(0);
     });
