@@ -68,7 +68,7 @@ exports.sendOTP = async (req, res, next) => {
     // Send OTP Mail to user
 
     mailService.sendEmail({
-        to: "spvamshi22@gmail.com",
+        to: user.email,
         subject: "Verification OTP",
         html: otp(user.firstName, new_otp),
         attachments: [],
@@ -247,7 +247,7 @@ exports.forgotPassword = async (req, res, next) => {
         // Send Email With Reset URL
 
         mailService.sendEmail({
-            to: "spvamshi22@gmail.com",
+            to: user.email,
             subject: "Verification OTP",
             html: resetPassword(user.firstName, resetURL),
             attachments: [],
