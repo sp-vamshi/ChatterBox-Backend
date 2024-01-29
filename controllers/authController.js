@@ -248,7 +248,7 @@ exports.forgotPassword = async (req, res, next) => {
 
         mailService.sendEmail({
             to: user.email,
-            subject: "Verification OTP",
+            subject: "Forgot Password",
             html: resetPassword(user.firstName, resetURL),
             attachments: [],
         })
