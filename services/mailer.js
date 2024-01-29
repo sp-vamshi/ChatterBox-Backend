@@ -12,7 +12,7 @@ const sendMail = async ({ to, subject, html, attachments }) => {
 
     const options = {
         from: process.env.CHATTER_BOX_MAIL_FROM,
-        to: "spvamshi22@gmail.com",
+        to: `${to}`,
         subject: subject,
         html: html,
         attachments
