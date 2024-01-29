@@ -5,10 +5,14 @@ dotenv.config({ path: "../config.env" })
 
 
 const sendMail = async ({ to, subject, html, attachments }) => {
+    console.log(
+        to,
+        subject, 
+    )
 
     const options = {
-        from: "developer.vamshi11@gmail.com",
-        to: to,
+        from: process.env.CHATTER_BOX_MAIL_FROM,
+        to: "spvamshi22@gmail.com",
         subject: subject,
         html: html,
         attachments
@@ -30,11 +34,13 @@ const sendMail = async ({ to, subject, html, attachments }) => {
         })
 
         const response = await transporter.sendMail(options)
+        console.log(response)
         return response
 
 
     } catch (error) {
         return error
+        console.log(error)
     }
 
 }
