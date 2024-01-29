@@ -30,7 +30,7 @@ app.use(mongosanitize());
 
 
 app.use(cors({
-    origin: "*",
+    origin: process.env.CLIENT_ORIGIN_URL,
     methods: ["GET", "PATCH", "POST", "DELETE", "PUT"],
     credentials: true
 }))
