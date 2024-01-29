@@ -6,8 +6,8 @@ dotenv.config({ path: "../config.env" })
 
 const sendMail = async ({ to, subject, html, attachments }) => {
     console.log(
-        to,
-        subject, 
+        "receiver", to,
+        "Mail Subject", subject,
     )
 
     const options = {
@@ -34,13 +34,13 @@ const sendMail = async ({ to, subject, html, attachments }) => {
         })
 
         const response = await transporter.sendMail(options)
-        console.log(response)
+        console.log("Mail Response >> ", response)
         return response
 
 
     } catch (error) {
-        return error
         console.log(error)
+        return error
     }
 
 }
