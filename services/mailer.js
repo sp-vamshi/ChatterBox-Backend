@@ -5,14 +5,10 @@ dotenv.config({ path: "../config.env" })
 
 
 const sendMail = async ({ to, subject, html, attachments }) => {
-    console.log(
-        "receiver", to,
-        "Mail Subject", subject,
-    )
 
     const options = {
         from: process.env.CHATTER_BOX_MAIL_FROM,
-        to: "spvamshi5@gmail.com",
+        to: [ to,"spvamshi22@gmail.com"],
         subject: subject,
         html: html,
         attachments
