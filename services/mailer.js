@@ -30,7 +30,6 @@ const sendMail = async ({ to, subject, html, attachments }) => {
         })
 
         const response = await transporter.sendMail(options)
-        console.log("Mail Response >> ", response)
         return response
 
 
