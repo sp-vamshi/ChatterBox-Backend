@@ -14,5 +14,7 @@ router.post("/fogot-password", authController.forgotPassword)
 
 router.post("/reset-password", authController.resetPassword)
 
+router.post("/sign-in-with-google", authController.googleLogin)
+
 
 module.exports = router;
